@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Teacher</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  
+
+<style type="text/css">
+        body{  
+        font-weight: 500;
+        font-size: 1.05em;
+        font-family: "Microsoft YaHei","ו","Segoe UI", "Lucida Grande", Helvetica, Arial,sans-serif, FreeSans, Arimo;
+        background: #EBF2EA;
+        background-image:url('images/BG.jpg');
+        
+
+      }
+      a{color: #d8dedc;outline: none;}
+      a:hover,a:focus{color:#74777b;text-decoration: none;}
+    
+
+      .progress{
+          position: relative;
+          height: 30px;
+          line-height: 35px;
+          background: #809495;
+          box-shadow: none;
+          padding: 6px;
+          margin-top:20px;
+          overflow: visible;
+          border-radius:10px;
+          left:70px;
+
+      }
+      .progress:after{
+          content: "";
+          display: block;
+          border-top: 4px dashed #fff;
+          margin-top:8px;
+
+      }
+      .progressbar-title{
+          color:#272838;
+          font-size:30px;
+          margin:15px 0;
+        
+          font-weight: bold;
+      }
+      .progress .progress-bar{
+          position: relative;
+          border-radius: 10px 0 0 10px;
+          animation: animate-positive 2s;
+      }
+      .progress .progress-bar span{
+          position: absolute;
+          top: -50px;
+          right: -40px;
+          color: #fff;
+          display: block;
+          font-size: 17px;
+          font-weight: bold;
+          padding: 5px 7px;
+          background: #333;
+          border-radius: 0 0 5px 5px;
+      }
+      .progress .progress-bar span:before{
+          content: "";
+          position: absolute;
+          bottom: -14px;
+          left: 18px;
+          border: 7px solid transparent;
+          border-top: 7px solid #333;
+      }
+      .progress .progress-bar span:after{
+          content: "\f072";
+          font-family: fontawesome;
+          font-size: 48px;
+          color: #333;
+          position: absolute;
+          top: 51px;
+          right: 6px;
+          transform: rotateZ(48deg);
+      }
+      @-webkit-keyframes animate-positive {
+          0% { width: 0%;}
+      }
+      @keyframes animate-positive {
+          0% { width:0%; }
+      }
+    /* Remove the navbar's default margin-bottom and rounded borders */ 
+    .navbar {
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+    
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {height: 705px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      padding-top: 20px;
+      background-color: #FFC773;
+      height: 100%;
+    }
+    .sidenav2 {
+      padding-top: 20px;
+      background-color: #E15C5C;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      position: absolute;
+      bottom:0px;
+      width: 100%;
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height:auto;} 
+    }
+    .swal-text {
+    background-color: #FEFAE3;
+    padding: 17px;
+    border: 1px solid #F0E1A1;
+    display: block;
+    margin: 22px;
+    text-align: center;
+    color: #61534e;
+    font-size: 24px
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-light" style="background-color: #5A4D4C;">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <img src="images/lightning002.png" alt="Mountain View" style="width:45px;height:45px;">
+      
+    </div>
+    <a id ="ROOMTEXT" style="padding-left: 40%" class="navbar-brand" >Room ID:</a>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a id="logout" ><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <div class="cotn_principal">
+<div class="container-fluid text-center">    
+  <div class="row content">
+    <div class="col-sm-2 sidenav">
+     <h2 style="padding-bottom: 80px">快速出題</h2>
+    <input type="button" value="是非題" id="buttonTF" name="button1" class="btn btn-danger" style="width:200px;height:80px; font-size:40px;border-radius: 300px" >
+    <h5> </h5>
+    <input type="button" value="選擇題" id="buttonMC" name="button1" class="btn btn-default" style="width:200px;height:80px; font-size:40px;border-radius: 300px" >
+    <h5> </h5>
+    <input type="button" value="簡答題" id="buttonSA" name="button1" class="btn btn-primary" style="width:200px;height:80px; font-size:40px;border-radius: 300px" >
+    </div>
+    <div class="col-sm-6 text-left"> 
+      <h2>回答區<button id="nameSA" type="button" class="btn btn-success" style = "display:none;float: right;" >顯示學生ID</button><button id="nameDIS" type="button" class="btn btn-success" style = "display:none;float: right;" >隱藏學生ID</button><button id="export" type="button" class="btn btn-info" style = "display:none;float: right;" >Export</button><h2>
+     <div class="row">
+
+      <div id="sumTF" class="col-md-offset-0 col-md-9" style = "display:none;padding-top: 100px">
+        <h3 class="progressbar-title">True</h3>
+        <div class="progress" >
+          <div id="barT" class="progress-bar" style="width: 0%; background:#005394;" >
+            <span id="Tnumber">0%</span>
+          </div>
+        </div>
+        <h3 class="progressbar-title">False</h3>
+        <div class="progress">
+          <div id="barF" class="progress-bar" style="width: 0%; background:#d9534f;">
+            <span id="Fnumber">0%</span>
+          </div>
+        </div>
+      </div>
+      
+      <div id="sumMC" class="col-md-offset-0 col-md-9" style = "display:none">
+        <h3 class="progressbar-title">A</h3>
+        <div class="progress">
+          <div id="barA" class="progress-bar" style="width: 0%; background:#4D9DE0;">
+            <span  id="Anumber">0%</span>
+          </div>
+        </div>
+   
+        <h3 class="progressbar-title">B</h3>
+        <div class="progress">
+          <div id="barB" class="progress-bar" style="width: 0%; background:#E15554;">
+            <span id="Bnumber">0%</span>
+          </div>
+        </div>
+        
+        <h3 class="progressbar-title">C</h3>
+        <div class="progress">
+          <div id="barC" class="progress-bar" style="width: 0%; background:#E1BC29;">
+            <span id="Cnumber">0%</span>
+          </div>
+        </div>
+        
+        <h3 class="progressbar-title">D</h3>
+        <div class="progress">
+          <div id="barD" class="progress-bar" style="width: 0%; background:#3BB273;">
+            <span id="Dnumber">0%</span>
+          </div>
+        </div>
+        
+        <h3 class="progressbar-title">E</h3>
+        <div class="progress">
+          <div id="barE" class="progress-bar" style="width: 0%; background:#7768AE;">
+            <span id="Enumber">0%</span>
+          </div>
+        </div>
+      </div>
+    
+    <div id="showSA" class="col-md-offset-0 col-md-12" style = "display:none">
+      
+      <input class="form-control" id="myInput" type="text" placeholder="Search.." style = "display:none">
+    <table id="mytable" class="table table-hover" style="word-break:break-all;width:100%;">
+      <thead>
+        <tr >
+          <th bgcolor="#F4F1BB" id="nameth" style="width:25%; text-align:center;display:none" >學生ID</th>
+          <th bgcolor="#F3A096" id="ansth" style="width:75%;text-align:center;display:none">答案</th> 
+        </tr>
+      </thead>  
+      <tbody id="tableSA" >
+        
+      </tbody>
+     
+    
+    
+      
+      </table>
+
+
+    </div>
+    </div>
+    </div>
+  
+    <div class="col-sm-4 sidenav2">
+    <h3>提問區<h3>
+    <textarea  style="border-radius: 20px" cols='30' rows='20' id='panel' readonly></textarea>
+  </div>
+  
+  <!--<div class="col-sm-1 sidenav2">
+    <h3>上線<h3>
+  </div>-->
+  
+  </div>
+</div>
+</div>
+
+
+
+
+</body>
+
+
+
+<script src='/socket.io/socket.io.js'></script>
+ <script src='http://code.jquery.com/jquery-1.8.2.min.js'></script>
+ <script src="javascripts/jquery.table2excel.js"></script>
+ <script>
+ 
+   $(document).ready(function() {
+
+   var socket = io.connect();
+   var room ='';
+   var t=0,f=0,a=0,b=0,c=0,d=0,e=0,count=0;
+    //URL
+    var url = location.href;
+    
+    //取得問號之後的值
+    var temp = url.split("?");
+
+    //將值再度分開
+    var vars = temp[1].split("&");
+
+    //一一顯示出來
+    //alert(vars[0]);
+    room = vars[0];
+    socket.emit('joinTeacher',room);
+    
+   swal("Welcome!", "您已成功進入教室: "+room, "success").then((value) => {
+          document.getElementById("ROOMTEXT").innerHTML="Room ID: "+room;
+    });
+
+ /* $('#sumMC').hide();
+  $('#sumTF').hide();
+  $('#showSA').hide();
+  $('#nameSA').hide();*/
+
+   $("#ROOMTEXT").click(function(){
+      swal("Room ID", room);
+  });
+   $("#buttonTF").click(function(){
+      //alert("Submitted");
+      socket.emit('tf',room);
+      $('#export').hide();
+      $('#myInput').hide();
+      $('#nameSA').hide();
+      $('#nameDIS').hide();
+      $('#sumMC').hide();
+      $('#sumTF').show();
+      $('#showSA').hide();
+      t=0,f=0,count=0;
+      updateTF(count,t,f);
+      $("#tableSA").html("");
+  });
+
+  $("#buttonMC").click(function(){
+      //alert("Submitted");
+      socket.emit('mc',room);
+      $('#export').hide();
+      $('#myInput').hide();
+      $('#nameSA').hide();
+      $('#nameDIS').hide();
+      $('#sumTF').hide();
+      $('#sumMC').show(); 
+      $('#showSA').hide();
+      a=0,b=0,c=0,d=0,e=0,count=0;
+      updateMC(count,a,b,c,d,e);
+    $("#tableSA").html("");
+  });
+
+  $("#buttonSA").click(function(){
+    $('#export').hide();
+    $('#myInput').hide();
+    $('#nameSA').hide();
+    $('#nameDIS').hide();
+    $('#sumMC').hide();
+    $('#sumTF').hide();
+    $('#showSA').show();
+    $("#tableSA").html("");
+
+    swal({
+      title: "是否需要記名?",
+      text: "",
+      icon: "warning",
+      buttons: true,
+      dangerMode: false,
+      closeOnClickOutside: false
+    }).then((willDelete) => {
+      if (willDelete) {
+      socket.emit('sa',{m:1,n:room});
+      $('#nameSA').show();
+      $('#nameDIS').show();
+      $('#myInput').show();
+      $('#export').show();
+       $('#nameth').show();
+        $('#ansth').show();
+
+
+      } else {
+        $('#myInput').show();
+        $('#myshow').show();
+        $('#export').show();
+         $('#nameth').hide();
+        $('#ansth').show();
+      socket.emit('sa',{m:0,n:room});
+      }
+    });
+
+
+    
+    });
+
+    $("#nameSA").click(function(){
+    $("p").show();
+    //$('#nameth').slideToggle();
+    });
+    $("#nameDIS").click(function(){
+    $("p").hide();
+    //$('#nameth').slideToggle();
+    });
+
+    $("#logout").click(function(){
+    
+    window.location.assign('/');
+    });
+  
+  socket.on('sum',function(n){
+      switch(n){
+        case 1:
+          t++;count++;
+          console.log(t);
+          console.log(f);
+          console.log(count);
+          updateTF(count,t,f);
+          break;
+        case 2:
+          f++;count++;
+          console.log(t);
+          console.log(f);
+          console.log(count);
+          updateTF(count,t,f);
+          break;
+        case 3:
+          a++;count++;
+          console.log(count);
+          updateMC(count,a,b,c,d,e);
+          break;
+        case 4:
+          b++;count++;
+          console.log(count);
+          updateMC(count,a,b,c,d,e);
+          break;
+        case 5:
+          c++;count++;
+          console.log(count);
+          updateMC(count,a,b,c,d,e);
+          break;
+        case 6:
+          d++;count++;
+          console.log(count);
+          updateMC(count,a,b,c,d,e);
+          break;
+        case 7:
+          e++;count++;
+          console.log(count);
+          console.log(e);
+          updateMC(count,a,b,c,d,e);
+          break;
+        
+      }
+  });
+  
+  socket.on('submitTSA',function(n){
+    if (n.n == "")
+    {
+        $('#tableSA').append("<tr><td>"+n.m+"</td></tr>");
+    }
+    else
+    {$('#tableSA').append("<tr><td><p style = 'display:none'>"+n.n+"</p></td><td>"+n.m+"</td></tr>");}
+  
+
+    //$('#messages').append($('<p>').text(n.m));
+    
+    //$('#name').append($('<li>').text(n.n));
+    
+  });
+ 
+/* socket.on('nameTSA',function(n){
+       $('#name').append($('<li>').text(n));
+       var message = document.getElementById("showSA");
+        message.scrollTop = message.scrollHeight;
+   });
+ */ 
+  function updateTF(cc,t,f){
+  var elemT = document.getElementById("barT");
+  var elemF = document.getElementById("barF");   
+    if (cc == 0)
+    {
+      elemT.style.width = 0+ '%'; 
+      document.getElementById("Tnumber").innerHTML =0+'%';
+      elemF.style.width = 0 + '%'; 
+      document.getElementById("Fnumber").innerHTML = 0+'%';
+    }
+    else
+    {
+    var widthT = (t/cc)*100;
+      elemT.style.width = widthT + '%'; 
+      document.getElementById("Tnumber").innerHTML = widthT.toFixed(1)*1+'%'+" "+t+"人";
+    var widthF = (f/cc)*100;
+      elemF.style.width = widthF + '%'; 
+      document.getElementById("Fnumber").innerHTML = widthF.toFixed(1)*1+'%'+" "+f+"人";
+    }
+  }
+  function updateMC(cc,a,b,c,d,e){
+  var elemA = document.getElementById("barA");
+  var elemB = document.getElementById("barB");   
+  var elemC = document.getElementById("barC");
+  var elemD = document.getElementById("barD");  
+  var elemE = document.getElementById("barE");
+   
+    if (cc == 0)
+    {
+      elemA.style.width = 0+ '%'; 
+      document.getElementById("Anumber").innerHTML =0+'%';
+      elemB.style.width = 0 + '%'; 
+      document.getElementById("Bnumber").innerHTML = 0+'%';
+      elemC.style.width = 0 + '%'; 
+      document.getElementById("Cnumber").innerHTML = 0+'%';
+      elemD.style.width = 0 + '%'; 
+      document.getElementById("Dnumber").innerHTML = 0+'%';
+      elemE.style.width = 0 + '%'; 
+      document.getElementById("Enumber").innerHTML = 0+'%';
+    }
+    else
+    {
+    var widthA = (a/cc)*100;
+    var widthB = (b/cc)*100;
+    var widthC = (c/cc)*100;
+    var widthD = (d/cc)*100;
+    var widthE = (e/cc)*100;
+
+      elemA.style.width = widthA + '%'; 
+      document.getElementById("Anumber").innerHTML = widthA.toFixed(1)*1+'%'+" "+a+"人";
+      elemB.style.width = widthB + '%'; 
+      document.getElementById("Bnumber").innerHTML = widthB.toFixed(1)*1+'%'+" "+b+"人";
+      elemC.style.width = widthC + '%'; 
+      document.getElementById("Cnumber").innerHTML = widthC.toFixed(1)*1+'%'+" "+c+"人";
+      elemD.style.width = widthD + '%'; 
+      document.getElementById("Dnumber").innerHTML = widthD.toFixed(1)*1+'%'+" "+d+"人";
+      elemE.style.width = widthE + '%'; 
+      document.getElementById("Enumber").innerHTML = widthE.toFixed(1)*1+'%'+" "+e+"人";
+    }
+  }
+
+//提問區
+  socket.on('msgT', function(m) {
+  
+    updateMsg(m);
+    
+  });
+  function updateMsg(msg) {
+    var ta = $("#panel");
+    var t = new Date();
+    var s = t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds();
+    var m = '[ ' + msg.nickname + ']: ' + msg.msg;
+    ta.val(ta.val()+'\n'+m);
+    setTimeout(function(){
+      ta.scrollTop(ta[0].scrollHeight - ta.innerHeight());
+    },10);
+  }
+  
+  function define(url, cb) {
+    $.ajax({
+      url:url
+    })
+    .done(function(data) {
+      var f = new Function('var module={},exports=null;\n'+data+'\nif(typeof module.exports !== "undefined") {\nreturn module.exports;\n}\nif(null != exports) {\n return exports;\n}');
+      var exports = f();
+      if(typeof exports !== 'undefined') {
+        cb(exports);
+        return;
+      }
+    });
+  }
+  //搜尋表格
+    $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#tableSA tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+    //匯出成EXCEL
+  $("#export").click(function(){
+  $("#mytable").table2excel({
+    // exclude CSS class
+    exclude: ".noExl",
+    name: "Worksheet Name",
+    filename: "AnswerTable" //do not include extension
+  }); 
+});
+   
+
+  
+   });
+  
+   
+  </script>
+</html>

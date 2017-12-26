@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html >
+<head>
+<meta charset="UTF-8">
+<title>MCUCSIE</title>
+
+<link rel="stylesheet" href="stylesheets/style.css">
+<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+<link rel='stylesheet prefetch' href='https://fonts.googleapis.com/icon?family=Material+Icons'>
+  
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <meta name=”viewport” content="width=device-width; height=device-height; maximum-scale=2" >
+</head>
+<body>
+<div style="text-align:center;clear:both">
+<script src="/gg_bd_ad_720x90.js" type="text/javascript"></script>
+<script src="/follow.js" type="text/javascript"></script>
+</div>
+
+<div class="cotn_principal">
+  <div class="cont_centrar">
+
+                <div class="cont_login" >
+                  <div class="cont_info_log_sign_up">
+                    <div class="col_md_login">
+                    <div class="cont_ba_opcitiy">
+                      <h2>STUDENT</h2>
+                      <p>輸入Room ID 進入教室</p>
+                      <button class="btn_login" onClick="cambiar_login()">ENTER</button>
+                    </div>
+                  </div>
+                  <div class="col_md_sign_up">
+                    <div class="cont_ba_opcitiy">
+                      <h2>TEACHER</h2>
+                      <p>登入老師系統</p>
+                      <button class="btn_sign_up" onClick="cambiar_sign_up()">LOGIN</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="cont_back_info">
+                  <div class="cont_img_back_grey"> <img src="images/po.jpg" alt="" /> </div>
+                </div>
+                <div class="cont_forms" >
+                  <div class="cont_img_back_"> <img src="images/po.jpg" alt="" /> </div>
+                  <div class="cont_form_login"> <a href="#" onClick="ocultar_login_sign_up()" ><i class="material-icons">&#xE5C4;</i></a>
+                    <h2>STUDENT</h2>
+                    <input id="roomid" type="text" placeholder="Room ID" />
+                    <button id = "enterROOM" class="btn_login" >ENTER</button>
+                  </div>
+                  <div id="LOGIN" class="cont_form_sign_up"> <a href="#" onClick="ocultar_login_sign_up()"><i class="material-icons">&#xE5C4;</i></a>
+                    <h2>TEACHER</h2>
+                    <input id=userT type="text" placeholder="User" />
+                    <input id=passwordT type="password" placeholder="Password" />
+                    <button id="userTB" class="btn_sign_up" ">LOGIN</button>
+                    <button id="singupBT" class="btn_sign_up" onClick="gotoREGT()">SIGN UP</button>
+                  </div>
+                </div>
+                </div> 
+           
+
+  </div>
+</div>
+
+
+
+</body>
+</html>
+<script src='/socket.io/socket.io.js'></script>
+<script src='http://code.jquery.com/jquery-1.8.2.min.js'></script>
+<script type="text/javascript">
+ 
+//socket-----------------------------------------------------
+$(document).ready(function() {
+
+   var socket = io.connect();
+   //socket.emit('check',{m:$('userT').val(),n:$('passwordT') })
+
+$("#userTB").click(function(){
+ 
+  socket.emit('check',{m: $('#userT').val(),n:$('#passwordT').val() });
+ 
+  });
+
+ socket.on('checkTeacher',function(m){
+   // alert("1");
+   console.log(m.m);
+      if(m.m==0)
+      {
+        swal("ERROR!", "帳號或密碼輸入錯誤", "error"); 
+      }
+      else
+      {
+        window.location.assign('/teacher?'+m.n);
+      }
+
+  });
+
+  $("#enterROOM").click(function(){
+   
+      var RoomID = document.getElementById("roomid").value;
+      socket.emit('joinRoomS',RoomID);
+   
+    });
+  
+  socket.on('checkENTER',function(m){
+    var RoomID = document.getElementById("roomid").value;
+    if(m == 1)
+    {
+
+      window.location.assign('/student?'+RoomID);
+      // setTimeout(function(){ socket.emit('roomS',RoomID); }, 1500);
+     
+      
+    }
+    else
+    {
+      swal("ERROR!", "查無此房間!", "error");
+    }
+
+
+  });
+
+
+});
+//socket-----------------------------------------------------
+function cambiar_login() {
+  document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login";  
+document.querySelector('.cont_form_login').style.display = "block";
+document.querySelector('.cont_form_sign_up').style.opacity = "0";               
+
+setTimeout(function(){  document.querySelector('.cont_form_login').style.opacity = "1"; },400);  
+  
+setTimeout(function(){    
+document.querySelector('.cont_form_sign_up').style.display = "none";
+},200);  
+  }
+
+function cambiar_sign_up(at) {
+  document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up";
+  document.querySelector('.cont_form_sign_up').style.display = "block";
+document.querySelector('.cont_form_login').style.opacity = "0";
+  
+setTimeout(function(){  document.querySelector('.cont_form_sign_up').style.opacity = "1";
+},100);  
+
+setTimeout(function(){   document.querySelector('.cont_form_login').style.display = "none";
+},400);  
+
+
+}    
+
+function gotoREGT(){
+  window.location.assign('/registerT'); 
+}
+
+
+function ocultar_login_sign_up() {
+
+document.querySelector('.cont_forms').className = "cont_forms";  
+document.querySelector('.cont_form_sign_up').style.opacity = "0";               
+document.querySelector('.cont_form_login').style.opacity = "0"; 
+
+setTimeout(function(){
+document.querySelector('.cont_form_sign_up').style.display = "none";
+document.querySelector('.cont_form_login').style.display = "none";
+},500);  
+  
+  }
+</script>

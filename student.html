@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Student</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    body{  
+        font-weight: 500;
+        font-size: 1.05em;
+        font-family: "Microsoft YaHei","ו","Segoe UI", "Lucida Grande", Helvetica, Arial,sans-serif, FreeSans, Arimo;
+
+      }
+    .row.content {height: 740px}
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+      }
+      .row.content {height: auto;} 
+    }
+  </style>
+</head>
+<body>
+
+<div class="container-fluid">
+  <div class="row content">
+    <div class="col-sm-2 sidenav">
+      <H1><img src="images/lightning002.png" alt="Mountain View" style="width:45px;height:45px;">Student</H1>
+    	
+    </div>
+
+    <div class="col-sm-10">
+      <div class="row">
+  <div class="col-sm-4"></div>
+  <div  id="chat" class="col-sm-4" style="font-size: 20px; border-radius: 10px;border: solid 2px #336699;padding: 15px 15px 15px 15px;line-height: 20px;">
+    <h2>提問區</h2>
+    <textarea    cols='30' rows='16' id='panel' readonly></textarea>
+    <div>
+      <label id='nicknamelabel' class='enabled'>暱稱: </label><input type='text' size='15' id='nickname' placeholder="nickname"><input type='button' value='確認' id='sendnickname' class="btn btn-info">
+    </div>
+    <label></label>
+    <div>
+    <table>
+      <tr>
+      	<td><input type='text' class="form-control" size='35' id='msg'  disabled></td>
+      	<td><input type='button' class="btn btn-info"  value='send' id='send' disabled></td>
+      </tr>
+     </table> 
+    </div>
+    
+  </div>
+ 
+  <div id="TF" class="col-sm-4" style = "display:none;border-radius: 10px;border: solid 2px #336699;text-align:center;padding: 15px 15px 15px 15px; ">
+    <h2>是非題</h2>
+    <form id="formTF" role="form">
+      <input type="button" value="T" id="buttonT" name="button1"  class="btn btn-primary btn-lg" style="width:240px;height:80px; font-size:40px;" >
+      <p></p>
+      <input type="button" value="F" id="buttonF" name="button2" class="btn btn-danger btn-lg" style="width:240px;height:80px; font-size:40px;" >
+    </form>
+  </div>
+  
+  <div id="MC" class="col-sm-4" style = "display:none;border-radius: 10px;border: solid 2px #336699;text-align:center;">
+    <h2>選擇題</h2>
+    <form id="formMC" role="form">
+      <input type="button" value="A" id="buttonA" name="button1" class="btn  btn-lg" style="width:240px;height:80px; font-size:40px;background:#4D9DE0;" >
+      <p> </p>
+      <input type="button" value="B" id="buttonB" name="button2" class="btn  btn-lg" style="width:240px;height:80px; font-size:40px;background:#E15554;" >
+      <p> </p>
+      <input type="button" value="C" id="buttonC" name="button1" class="btn  btn-lg" style="width:240px;height:80px; font-size:40px;background:#E1BC29;" >
+      <p> </p>
+      <input type="button" value="D" id="buttonD" name="button2" class="btn  btn-lg" style="width:240px;height:80px; font-size:40px;background:#3BB273;" >
+      <p> </p>
+      <input type="button" value="E" id="buttonE" name="button1" class="btn  btn-lg" style="width:240px;height:80px; font-size:40px;background:#7768AE;" >
+      
+    </form>
+  </div>
+  
+  <div id="SA" class="col-sm-4" class="container-fluid" style = "display:none;border-radius: 10px;border: solid 2px #336699;text-align:center;">
+    <h2>簡答題</h2>
+    <form id="formSA" role="form">
+      <div class="row">
+        <label for="comment">請輸入你的答案:</label>
+        <textarea class="form-control" rows="5" id="comment"></textarea>
+        <p></p>
+         <div style="text-align:center;"><button type="button" id="submitSA" class="btn btn-success" >傳送</button> </div>
+        
+      </div>
+    </form>
+  </div>
+  
+  <div class="col-sm-4"></div>
+  </div>
+    </div>
+  </div>
+</div>
+
+
+
+</body>
+ <script src='/socket.io/socket.io.js'></script>
+ <script src='http://code.jquery.com/jquery-1.8.2.min.js'></script>
+ <script type="text/javascript">
+ $(document).ready(function() {
+  var socket = io.connect();
+  var nickname = '';
+  var room = '';
+  var rooms = {};
+  var nameSA='';
+  
+    //URL
+    var url = location.href;
+    
+    //取得問號之後的值
+    var temp = url.split("?");
+
+    //將值再度分開
+    var vars = temp[1].split("&");
+
+    //一一顯示出來
+    //alert(vars[0]);
+    room = vars[0];
+    socket.emit('joinStudent',room);
+
+   swal("Welcome!", "您已成功進入教室: "+room, "success").then((value) => {
+    $('#nickname').focus();
+
+    });
+   //聊天室
+  
+
+  $('#sendnickname').click(function(e) {
+     console.log("form1");
+    e.preventDefault();
+    socket.emit('setnickname', {name:$('#nickname').val(),room:room});
+    });
+
+  socket.on('nicknamesuccess', function(m) {
+    console.log("nicknamesuccess");
+    nickname = m;
+    $('#nickname').prop('disabled', true);
+    $('#sendnickname').prop('disabled', true);
+    $('#msg').prop('disabled', false);
+    $('#send').prop('disabled', false);
+    $('#msg').focus();
+  });
+
+  socket.on('nicknamefail', function(m) {
+    console.log("nicknamefail");
+    swal("暱稱重複!", '你的暱稱將被更改為"'+m+'"');
+    nickname = m;
+    $('#nickname').val(m);
+    $('#nickname').prop('disabled', true);
+    $('#sendnickname').prop('disabled', true);
+    $('#msg').prop('disabled', false);
+    $('#send').prop('disabled', false);
+    $('#msg').focus();
+  });
+
+  $('#send').click(function(e) {
+    e.preventDefault();
+    var m = $('#msg').val();
+    socket.emit('post', {nickname: nickname, msg: m,room:room});
+    $('#msg').val('');
+    updateMsg({nickname:nickname,msg:m});
+  })
+
+  socket.on('msg', function(m) {
+    updateMsg(m);
+    
+  });
+  socket.on('system', function(m) {
+    updateMsg({nickname:'SYSTEM', msg:m});
+  });
+
+
+  function updateMsg(msg) {
+    var ta = $("#panel");
+    var t = new Date();
+    //var s = t.getHours() + ':' + t.getMinutes() + ':' + t.getSeconds();
+    var m =  msg.nickname + ' : ' + msg.msg;
+    ta.val(ta.val()+'\n'+m);
+    setTimeout(function(){
+      ta.scrollTop(ta[0].scrollHeight - ta.innerHeight());
+    },10);
+  }
+  
+  function define(url, cb) {
+    $.ajax({
+      url:url
+    })
+    .done(function(data) {
+      var f = new Function('var module={},exports=null;\n'+data+'\nif(typeof module.exports !== "undefined") {\nreturn module.exports;\n}\nif(null != exports) {\n return exports;\n}');
+      var exports = f();
+      if(typeof exports !== 'undefined') {
+        cb(exports);
+        return;
+      }
+    });
+  }
+  //互動區
+  $("#buttonT").click(function(){
+    //alert("Submitted");
+  socket.emit('value',{m:1,n:room});
+  back();
+  });
+  $("#buttonF").click(function(){
+    //alert("Submitted");
+  socket.emit('value',{m:2,n:room});
+  back();
+  });
+  $("#buttonA").click(function(){
+   // alert("Submitted");
+  socket.emit('value',{m:3,n:room});
+  back();
+  });
+  $("#buttonB").click(function(){
+    //alert("Submitted");
+  socket.emit('value',{m:4,n:room});
+  back();
+  });
+  $("#buttonC").click(function(){
+    //alert("Submitted");
+  socket.emit('value',{m:5,n:room});
+  back();
+  });
+  $("#buttonD").click(function(){
+    //alert("Submitted");
+  socket.emit('value',{m:6,n:room});
+  back();
+  });
+  $("#buttonE").click(function(){
+    //alert("Submitted");
+  socket.emit('value',{m:7,n:room});
+  back();
+  });
+
+  $("#submitSA").click(function(){
+    var a = document.getElementById("comment");
+  
+  if( !isNull(a.value)){
+  
+  socket.emit('submitSSA', { m :$('#comment').val() , n: nameSA ,x:room });  
+  console.log($('#comment').val());
+  
+  back();
+  }else{
+  swal("ERROR!", "請輸入答案!!!", "error");
+    }
+  a.value= "";
+  });
+
+  function isNull( str ){
+if ( str == "" ) return true;
+var regu = "^[ ]+$";
+var re = new RegExp(regu);
+return re.test(str);
+}
+
+function back() {
+    $('#chat').show();
+    $('#MC').hide();
+    $('#SA').hide();
+    $('#TF').hide();
+}
+
+  
+  socket.on('Stf',function(){
+    //alert(1);
+    $('#chat').hide();
+    $('#MC').hide();
+    $('#SA').hide();
+    $('#TF').show();  
+  });
+  socket.on('Smc',function(){
+    
+    $('#chat').hide();
+    $('#MC').show();
+    $('#SA').hide();
+    $('#TF').hide();    
+  });
+  socket.on('Ssa',function(n){
+    $('#chat').hide();
+    $('#MC').hide();
+    $('#SA').show();
+    $('#TF').hide();
+    if (n==1)
+    {
+    swal("請輸入名字or學號:", {
+        content: "input",
+      })
+      .then((value) => {
+        swal(`Your ID: ${value}`);
+        nameSA=value;
+        //socket.emit('nameSSA',value);
+         console.log(value);
+      });
+    }
+    else
+      {nameSA ="";}
+    
+  });
+
+
+
+  
+  
+
+
+
+ });
+
+
+
+ </script>
+ 
+</html>
